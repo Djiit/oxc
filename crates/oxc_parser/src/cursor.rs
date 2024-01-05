@@ -48,24 +48,37 @@ impl<'a> Parser<'a> {
 
     /// Get current string
     pub(crate) fn cur_string(&self) -> Option<&str> {
+        // dbg!(self.cur_kind());
+        // if !matches!(
+        // self.cur_kind(),
+        // Kind::Str | Kind::Ident | Kind::PrivateIdentifier | Kind::JSXText
+        // ) {
+        // return None;
+        // }
         let index = self.cur_token().value_index;
-        (index != u32::max_value()).then(|| self.lexer.strings[index as usize])
+        if index == u32::max_value() {
+            return None;
+        }
+        Some(self.lexer.strings[index as usize])
     }
 
     /// Get current number
     pub(crate) fn cur_number(&self) -> f64 {
+        debug_assert!(self.cur_kind().is_number());
         let index = self.cur_token().value_index;
         self.lexer.numbers[index as usize]
     }
 
-    /// Get current bigint
-    pub(crate) fn cur_bigint(&self) -> num_bigint::BigInt {
-        let index = self.cur_token().value_index;
-        self.lexer.bigints[index as usize].clone()
-    }
+    // /// Get current bigint
+    // pub(crate) fn cur_bigint(&self) -> num_bigint::BigInt {
+    // debug_assert_eq!(self.cur_kind(), Kind::BigInt);
+    // let index = self.cur_token().value_index;
+    // self.lexer.bigints[index as usize].clone()
+    // }
 
     /// Get current regex
     pub(crate) fn cur_regex(&self) -> RegExp<'a> {
+        debug_assert_eq!(self.cur_kind(), Kind::RegExp);
         let index = self.cur_token().value_index;
         self.lexer.regexes[index as usize]
     }

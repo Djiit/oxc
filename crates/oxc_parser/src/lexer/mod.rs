@@ -107,23 +107,23 @@ impl<'a> Lexer<'a> {
     }
 
     fn save_string(&mut self, text: &'a str) {
-        self.strings.push(text);
         self.current.token.value_index = self.strings.len() as u32;
+        self.strings.push(text);
     }
 
     fn save_number(&mut self, number: f64) {
-        self.numbers.push(number);
         self.current.token.value_index = self.numbers.len() as u32;
+        self.numbers.push(number);
     }
 
     fn save_bigint(&mut self, number: BigInt) {
-        self.bigints.push(number);
         self.current.token.value_index = self.bigints.len() as u32;
+        self.bigints.push(number);
     }
 
     fn save_regex(&mut self, text: RegExp<'a>) {
-        self.regexes.push(text);
         self.current.token.value_index = self.regexes.len() as u32;
+        self.regexes.push(text);
     }
 
     /// Remaining string from `Chars`

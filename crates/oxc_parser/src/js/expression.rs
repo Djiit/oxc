@@ -90,7 +90,7 @@ impl<'a> Parser<'a> {
 
     pub(crate) fn parse_identifier_kind(&mut self, kind: Kind) -> (Span, Atom) {
         let span = self.start_span();
-        let name = Atom::from(self.cur_string().unwrap());
+        let name = Atom::from(self.cur_string().unwrap_or(""));
         self.bump_remap(kind);
         (self.end_span(span), name)
     }
@@ -299,7 +299,7 @@ impl<'a> Parser<'a> {
             _ => return Err(self.unexpected()),
         };
         let value = match self.cur_kind() {
-            kind if kind.is_number() => self.cur_bigint(),
+            kind if kind.is_number() => num_bigint::BigInt::default(), /* FIXME self.cur_bigint()*/
             _ => return Err(self.unexpected()),
         };
         self.bump_any();
