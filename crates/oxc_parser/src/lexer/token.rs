@@ -5,8 +5,15 @@ use oxc_span::Span;
 
 use super::kind::Kind;
 
-#[derive(Debug, Clone, Default)]
-pub struct Token<'a> {
+#[cfg(target_pointer_width = "64")]
+mod size_asserts {
+    use oxc_index::assert_eq_size;
+
+    assert_eq_size!(super::Token, [u8; 16]);
+}
+
+#[derive(Debug, Clone)]
+pub struct Token {
     /// Token Kind
     pub kind: Kind,
 
@@ -22,69 +29,30 @@ pub struct Token<'a> {
     /// Is the original string escaped?
     pub escaped: bool,
 
-    pub value: TokenValue<'a>,
+    pub value_index: u32,
 }
 
-#[cfg(target_pointer_width = "64")]
-mod size_asserts {
-    use oxc_index::assert_eq_size;
-
-    assert_eq_size!(super::Token, [u8; 48]);
+impl Default for Token {
+    fn default() -> Self {
+        Self {
+            kind: Kind::default(),
+            start: 0,
+            end: 0,
+            is_on_new_line: false,
+            escaped: false,
+            value_index: u32::max_value(),
+        }
+    }
 }
 
-impl<'a> Token<'a> {
+impl Token {
     pub fn span(&self) -> Span {
         Span::new(self.start, self.end)
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum TokenValue<'a> {
-    None,
-    Number(f64),
-    BigInt(num_bigint::BigInt),
-    String(&'a str),
-    RegExp(RegExp<'a>),
-}
-
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct RegExp<'a> {
     pub pattern: &'a str,
     pub flags: RegExpFlags,
-}
-
-impl<'a> Default for TokenValue<'a> {
-    fn default() -> Self {
-        Self::None
-    }
-}
-
-impl<'a> TokenValue<'a> {
-    pub fn as_number(&self) -> f64 {
-        match self {
-            Self::Number(s) => *s,
-            _ => unreachable!("expected number!"),
-        }
-    }
-
-    pub fn as_bigint(&self) -> num_bigint::BigInt {
-        match self {
-            Self::BigInt(s) => s.clone(),
-            _ => unreachable!("expected bigint!"),
-        }
-    }
-
-    pub fn as_regex(&self) -> &RegExp<'a> {
-        match self {
-            Self::RegExp(regex) => regex,
-            _ => unreachable!("expected regex!"),
-        }
-    }
-
-    pub fn get_string(&self) -> Option<&str> {
-        match self {
-            Self::String(s) => Some(s),
-            _ => None,
-        }
-    }
 }

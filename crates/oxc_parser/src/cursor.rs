@@ -5,13 +5,13 @@ use oxc_span::Span;
 
 use crate::{
     diagnostics,
-    lexer::{Kind, LexerCheckpoint, LexerContext, Token},
+    lexer::{Kind, LexerCheckpoint, LexerContext, RegExp, Token},
     Context, Parser,
 };
 
 pub struct ParserCheckpoint<'a> {
     lexer: LexerCheckpoint<'a>,
-    cur_token: Token<'a>,
+    cur_token: Token,
     prev_span_end: u32,
     errors_pos: usize,
 }
@@ -29,7 +29,7 @@ impl<'a> Parser<'a> {
     }
 
     /// Get current token
-    pub(crate) fn cur_token(&self) -> &Token<'a> {
+    pub(crate) fn cur_token(&self) -> &Token {
         &self.token
     }
 
@@ -48,7 +48,26 @@ impl<'a> Parser<'a> {
 
     /// Get current string
     pub(crate) fn cur_string(&self) -> Option<&str> {
-        self.cur_token().value.get_string()
+        let index = self.cur_token().value_index;
+        (index != u32::max_value()).then(|| self.lexer.strings[index as usize])
+    }
+
+    /// Get current number
+    pub(crate) fn cur_number(&self) -> f64 {
+        let index = self.cur_token().value_index;
+        self.lexer.numbers[index as usize]
+    }
+
+    /// Get current bigint
+    pub(crate) fn cur_bigint(&self) -> num_bigint::BigInt {
+        let index = self.cur_token().value_index;
+        self.lexer.bigints[index as usize].clone()
+    }
+
+    /// Get current regex
+    pub(crate) fn cur_regex(&self) -> RegExp<'a> {
+        let index = self.cur_token().value_index;
+        self.lexer.regexes[index as usize]
     }
 
     /// Peek next token, returns EOF for final peek

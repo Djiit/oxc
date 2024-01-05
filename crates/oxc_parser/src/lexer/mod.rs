@@ -11,6 +11,7 @@ mod string_builder;
 mod token;
 mod trivia_builder;
 
+use num_bigint::BigInt;
 use std::{collections::VecDeque, str::Chars};
 
 use oxc_allocator::{Allocator, String};
@@ -24,7 +25,7 @@ use oxc_syntax::{
     },
     unicode_id_start::is_id_start_unicode,
 };
-pub use token::{RegExp, Token, TokenValue};
+pub use token::{RegExp, Token};
 
 pub use self::kind::Kind;
 use self::{
@@ -39,7 +40,7 @@ pub struct LexerCheckpoint<'a> {
     /// Remaining chars to be tokenized
     chars: Chars<'a>,
 
-    token: Token<'a>,
+    token: Token,
 
     errors_pos: usize,
 }
@@ -67,6 +68,12 @@ pub struct Lexer<'a> {
     context: LexerContext,
 
     pub(crate) trivia_builder: TriviaBuilder,
+
+    // TODO: intern these values
+    pub(crate) numbers: Vec<f64>,
+    pub(crate) bigints: Vec<BigInt>,
+    pub(crate) strings: Vec<&'a str>,
+    pub(crate) regexes: Vec<RegExp<'a>>,
 }
 
 #[allow(clippy::unused_self)]
@@ -92,7 +99,31 @@ impl<'a> Lexer<'a> {
             lookahead: VecDeque::with_capacity(4), // 4 is the maximum lookahead for TypeScript
             context: LexerContext::Regular,
             trivia_builder: TriviaBuilder::default(),
+            numbers: vec![],
+            bigints: vec![],
+            strings: vec![],
+            regexes: vec![],
         }
+    }
+
+    fn save_string(&mut self, text: &'a str) {
+        self.strings.push(text);
+        self.current.token.value_index = self.strings.len() as u32;
+    }
+
+    fn save_number(&mut self, number: f64) {
+        self.numbers.push(number);
+        self.current.token.value_index = self.numbers.len() as u32;
+    }
+
+    fn save_bigint(&mut self, number: BigInt) {
+        self.bigints.push(number);
+        self.current.token.value_index = self.bigints.len() as u32;
+    }
+
+    fn save_regex(&mut self, text: RegExp<'a>) {
+        self.regexes.push(text);
+        self.current.token.value_index = self.regexes.len() as u32;
     }
 
     /// Remaining string from `Chars`
@@ -118,7 +149,7 @@ impl<'a> Lexer<'a> {
     }
 
     /// Find the nth lookahead token lazily
-    pub fn lookahead(&mut self, n: u8) -> &Token<'a> {
+    pub fn lookahead(&mut self, n: u8) -> &Token {
         let n = n as usize;
         debug_assert!(n > 0);
 
@@ -158,7 +189,7 @@ impl<'a> Lexer<'a> {
     }
 
     /// Main entry point
-    pub fn next_token(&mut self) -> Token<'a> {
+    pub fn next_token(&mut self) -> Token {
         if let Some(checkpoint) = self.lookahead.pop_front() {
             self.current.chars = checkpoint.chars;
             self.current.errors_pos = checkpoint.errors_pos;
@@ -168,13 +199,13 @@ impl<'a> Lexer<'a> {
         self.finish_next(kind)
     }
 
-    pub fn next_jsx_child(&mut self) -> Token<'a> {
+    pub fn next_jsx_child(&mut self) -> Token {
         self.current.token.start = self.offset();
         let kind = self.read_jsx_child();
         self.finish_next(kind)
     }
 
-    fn finish_next(&mut self, kind: Kind) -> Token<'a> {
+    fn finish_next(&mut self, kind: Kind) -> Token {
         self.current.token.kind = kind;
         self.current.token.end = self.offset();
         debug_assert!(self.current.token.start <= self.current.token.end);
@@ -187,7 +218,7 @@ impl<'a> Lexer<'a> {
     ///   where a `RegularExpressionLiteral` is permitted
     /// Which means the parser needs to re-tokenize on `PrimaryExpression`,
     /// `RegularExpressionLiteral` only appear on the right hand side of `PrimaryExpression`
-    pub fn next_regex(&mut self, kind: Kind) -> Token<'a> {
+    pub fn next_regex(&mut self, kind: Kind) -> Token {
         self.current.token.start = self.offset()
             - match kind {
                 Kind::Slash => 1,
@@ -199,7 +230,7 @@ impl<'a> Lexer<'a> {
         self.finish_next(kind)
     }
 
-    pub fn next_right_angle(&mut self) -> Token<'a> {
+    pub fn next_right_angle(&mut self) -> Token {
         let kind = self.read_right_angle();
         self.lookahead.clear();
         self.finish_next(kind)
@@ -207,7 +238,7 @@ impl<'a> Lexer<'a> {
 
     /// Re-tokenize the current `}` token for `TemplateSubstitutionTail`
     /// See Section 12, the parser needs to re-tokenize on `TemplateSubstitutionTail`,
-    pub fn next_template_substitution_tail(&mut self) -> Token<'a> {
+    pub fn next_template_substitution_tail(&mut self) -> Token {
         self.current.token.start = self.offset() - 1;
         let kind = self.read_template_literal(Kind::TemplateMiddle, Kind::TemplateTail);
         self.lookahead.clear();
@@ -215,14 +246,14 @@ impl<'a> Lexer<'a> {
     }
 
     /// Expand the current token for `JSXIdentifier`
-    pub fn next_jsx_identifier(&mut self, start_offset: u32) -> Token<'a> {
+    pub fn next_jsx_identifier(&mut self, start_offset: u32) -> Token {
         let kind = self.read_jsx_identifier(start_offset);
         self.lookahead.clear();
         self.finish_next(kind)
     }
 
     /// Re-tokenize '<<' or '<=' or '<<=' to '<'
-    pub fn re_lex_as_typescript_l_angle(&mut self, kind: Kind) -> Token<'a> {
+    pub fn re_lex_as_typescript_l_angle(&mut self, kind: Kind) -> Token {
         let offset = match kind {
             Kind::ShiftLeft | Kind::LtEq => 2,
             Kind::ShiftLeftEq => 3,
@@ -297,28 +328,34 @@ impl<'a> Lexer<'a> {
     }
 
     fn set_numeric_value(&mut self, kind: Kind, src: &'a str) {
+        enum NumberValue {
+            Number(f64),
+            BigInt(BigInt),
+        }
+
         let value = match kind {
             Kind::Decimal | Kind::Binary | Kind::Octal | Kind::Hex => {
                 src.strip_suffix('n').map_or_else(
-                    || parse_int(src, kind).map(TokenValue::Number),
-                    |src| parse_big_int(src, kind).map(TokenValue::BigInt),
+                    || parse_int(src, kind).map(NumberValue::Number),
+                    |src| parse_big_int(src, kind).map(NumberValue::BigInt),
                 )
             }
             Kind::Float | Kind::PositiveExponential | Kind::NegativeExponential => {
-                parse_float(src).map(TokenValue::Number)
+                parse_float(src).map(NumberValue::Number)
             }
-            Kind::Undetermined => Ok(TokenValue::Number(std::f64::NAN)),
+            Kind::Undetermined => Ok(NumberValue::Number(std::f64::NAN)),
             _ => unreachable!("{kind}"),
         };
 
         match value {
-            Ok(value) => self.current.token.value = value,
+            Ok(NumberValue::Number(value)) => self.save_number(value),
+            Ok(NumberValue::BigInt(value)) => self.save_bigint(value),
             Err(err) => {
                 self.error(diagnostics::InvalidNumber(
                     err,
                     Span::new(self.current.token.start, self.offset()),
                 ));
-                self.current.token.value = TokenValue::Number(std::f64::NAN);
+                self.save_number(std::f64::NAN);
             }
         };
     }
@@ -450,7 +487,7 @@ impl<'a> Lexer<'a> {
     fn identifier_name(&mut self, builder: AutoCow<'a>) -> &'a str {
         let (has_escape, text) = self.identifier_tail(builder);
         self.current.token.escaped = has_escape;
-        self.current.token.value = TokenValue::String(text);
+        self.save_string(text);
         text
     }
 
@@ -559,7 +596,7 @@ impl<'a> Lexer<'a> {
             }
         }
         let (_, name) = self.identifier_tail(builder);
-        self.current.token.value = TokenValue::String(name);
+        self.save_string(name);
         Kind::PrivateIdentifier
     }
 
@@ -791,8 +828,7 @@ impl<'a> Lexer<'a> {
                 }
                 Some(c @ ('"' | '\'')) => {
                     if c == delimiter {
-                        self.current.token.value =
-                            TokenValue::String(builder.finish_without_push(self));
+                        self.save_string(builder.finish_without_push(self));
                         return Kind::Str;
                     }
                     builder.push_matching(c);
@@ -877,8 +913,8 @@ impl<'a> Lexer<'a> {
             flags |= flag;
         }
 
-        self.current.token.value = TokenValue::RegExp(RegExp { pattern, flags });
-
+        let regex = RegExp { pattern, flags };
+        self.save_regex(regex);
         Kind::RegExp
     }
 
@@ -890,16 +926,14 @@ impl<'a> Lexer<'a> {
             match c {
                 '$' if self.peek() == Some('{') => {
                     if is_valid_escape_sequence {
-                        self.current.token.value =
-                            TokenValue::String(builder.finish_without_push(self));
+                        self.save_string(builder.finish_without_push(self));
                     }
                     self.current.chars.next();
                     return substitute;
                 }
                 '`' => {
                     if is_valid_escape_sequence {
-                        self.current.token.value =
-                            TokenValue::String(builder.finish_without_push(self));
+                        self.save_string(builder.finish_without_push(self));
                     }
                     return tail;
                 }
@@ -946,7 +980,7 @@ impl<'a> Lexer<'a> {
         }
         let mut s = String::from_str_in(prev_str, self.allocator);
         s.push_str(builder.finish(self));
-        self.current.token.value = TokenValue::String(s.into_bump_str());
+        self.save_string(s.into_bump_str());
         Kind::Ident
     }
 
@@ -981,7 +1015,7 @@ impl<'a> Lexer<'a> {
                         break;
                     }
                 }
-                self.current.token.value = TokenValue::String(builder.finish(self));
+                self.save_string(builder.finish(self));
                 Kind::JSXText
             }
             None => Kind::Eof,
@@ -1004,8 +1038,7 @@ impl<'a> Lexer<'a> {
             match self.current.chars.next() {
                 Some(c @ ('"' | '\'')) => {
                     if c == delimiter {
-                        self.current.token.value =
-                            TokenValue::String(builder.finish_without_push(self));
+                        self.save_string(builder.finish_without_push(self));
                         return Kind::Str;
                     }
                     builder.push_matching(c);

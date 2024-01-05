@@ -15,12 +15,7 @@ use super::{
         map_unary_operator, map_update_operator,
     },
 };
-use crate::{
-    diagnostics,
-    lexer::{Kind, TokenValue},
-    list::SeparatedList,
-    Context, Parser,
-};
+use crate::{diagnostics, lexer::Kind, list::SeparatedList, Context, Parser};
 
 impl<'a> Parser<'a> {
     pub(crate) fn parse_paren_expression(&mut self) -> Result<Expression<'a>> {
@@ -95,12 +90,9 @@ impl<'a> Parser<'a> {
 
     pub(crate) fn parse_identifier_kind(&mut self, kind: Kind) -> (Span, Atom) {
         let span = self.start_span();
-        let name = match std::mem::take(&mut self.token.value) {
-            TokenValue::String(value) => value,
-            _ => "",
-        };
+        let name = Atom::from(self.cur_string().unwrap());
         self.bump_remap(kind);
-        (self.end_span(span), Atom::from(name))
+        (self.end_span(span), name)
     }
 
     pub(crate) fn check_identifier(&mut self, span: Span, name: &Atom) {
@@ -276,7 +268,7 @@ impl<'a> Parser<'a> {
 
     pub(crate) fn parse_literal_number(&mut self) -> Result<NumberLiteral<'a>> {
         let span = self.start_span();
-        let value = self.cur_token().value.as_number();
+        let value = self.cur_number();
         let base = match self.cur_kind() {
             Kind::Decimal => NumberBase::Decimal,
             Kind::Float => NumberBase::Float,
@@ -307,7 +299,7 @@ impl<'a> Parser<'a> {
             _ => return Err(self.unexpected()),
         };
         let value = match self.cur_kind() {
-            kind if kind.is_number() => self.cur_token().value.as_bigint(),
+            kind if kind.is_number() => self.cur_bigint(),
             _ => return Err(self.unexpected()),
         };
         self.bump_any();
@@ -317,7 +309,7 @@ impl<'a> Parser<'a> {
     pub(crate) fn parse_literal_regexp(&mut self) -> Result<RegExpLiteral> {
         let span = self.start_span();
         let r = match self.cur_kind() {
-            Kind::RegExp => self.cur_token().value.as_regex(),
+            Kind::RegExp => self.cur_regex(),
             _ => return Err(self.unexpected()),
         };
         let pattern = Atom::from(r.pattern);
@@ -334,12 +326,10 @@ impl<'a> Parser<'a> {
         if !self.at(Kind::Str) {
             return Err(self.unexpected());
         }
-        let TokenValue::String(value) = std::mem::take(&mut self.token.value) else {
-            unreachable!()
-        };
+        let value = Atom::from(self.cur_string().unwrap());
         let span = self.start_span();
         self.bump_any();
-        Ok(StringLiteral { span: self.end_span(span), value: value.into() })
+        Ok(StringLiteral { span: self.end_span(span), value })
     }
 
     /// Section [Array Expression](https://tc39.es/ecma262/#prod-ArrayLiteral)
