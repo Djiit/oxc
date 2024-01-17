@@ -1,7 +1,7 @@
 parser_typescript Summary:
 AST Parsed     : 5238/5242 (99.92%)
-Positive Passed: 5231/5242 (99.79%)
-Negative Passed: 1023/4876 (20.98%)
+Positive Passed: 5222/5242 (99.62%)
+Negative Passed: 1030/4876 (21.12%)
 Expect Syntax Error: "compiler/ClassDeclaration10.ts"
 Expect Syntax Error: "compiler/ClassDeclaration11.ts"
 Expect Syntax Error: "compiler/ClassDeclaration13.ts"
@@ -473,7 +473,6 @@ Expect Syntax Error: "compiler/decoratorInJsFile.ts"
 Expect Syntax Error: "compiler/decoratorInJsFile1.ts"
 Expect Syntax Error: "compiler/decoratorMetadataGenericTypeVariable.ts"
 Expect Syntax Error: "compiler/decoratorMetadataGenericTypeVariableDefault.ts"
-Expect Syntax Error: "compiler/decoratorMetadataGenericTypeVariableInScope.ts"
 Expect Syntax Error: "compiler/decoratorMetadataNoLibIsolatedModulesTypes.ts"
 Expect Syntax Error: "compiler/decoratorsOnComputedProperties.ts"
 Expect Syntax Error: "compiler/deduplicateImportsInSystem.ts"
@@ -913,7 +912,6 @@ Expect Syntax Error: "compiler/importedModuleAddToGlobal.ts"
 Expect Syntax Error: "compiler/inDoesNotOperateOnPrimitiveTypes.ts"
 Expect Syntax Error: "compiler/inKeywordAndUnknown.ts"
 Expect Syntax Error: "compiler/inOperator.ts"
-Expect Syntax Error: "compiler/incompatibleAssignmentOfIdenticallyNamedTypes.ts"
 Expect Syntax Error: "compiler/incompatibleExports1.ts"
 Expect Syntax Error: "compiler/incompatibleExports2.ts"
 Expect Syntax Error: "compiler/incompatibleGenericTypes.ts"
@@ -1088,7 +1086,6 @@ Expect Syntax Error: "compiler/jsdocCallbackAndType.ts"
 Expect Syntax Error: "compiler/jsdocClassMissingTypeArguments.ts"
 Expect Syntax Error: "compiler/jsdocFunctionTypeFalsePositive.ts"
 Expect Syntax Error: "compiler/jsdocIllegalTags.ts"
-Expect Syntax Error: "compiler/jsdocInTypeScript.ts"
 Expect Syntax Error: "compiler/jsdocParamTagInvalid.ts"
 Expect Syntax Error: "compiler/jsdocParameterParsingInfiniteLoop.ts"
 Expect Syntax Error: "compiler/jsdocResolveNameFailureInTypedef.ts"
@@ -1300,7 +1297,6 @@ Expect Syntax Error: "compiler/noRepeatedPropertyNames.ts"
 Expect Syntax Error: "compiler/noStrictGenericChecks.ts"
 Expect Syntax Error: "compiler/noTypeArgumentOnReturnType1.ts"
 Expect Syntax Error: "compiler/noUnusedLocals_destructuringAssignment.ts"
-Expect Syntax Error: "compiler/noUnusedLocals_selfReference.ts"
 Expect Syntax Error: "compiler/noUnusedLocals_selfReference_skipsBlockLocations.ts"
 Expect Syntax Error: "compiler/noUnusedLocals_typeParameterMergedWithParameter.ts"
 Expect Syntax Error: "compiler/noUnusedLocals_writeOnly.ts"
@@ -1900,7 +1896,6 @@ Expect Syntax Error: "compiler/unusedTypeParameters2.ts"
 Expect Syntax Error: "compiler/unusedTypeParameters3.ts"
 Expect Syntax Error: "compiler/unusedTypeParameters4.ts"
 Expect Syntax Error: "compiler/unusedTypeParameters5.ts"
-Expect Syntax Error: "compiler/unusedTypeParametersCheckedByNoUnusedParameters.ts"
 Expect Syntax Error: "compiler/unusedTypeParametersWithUnderscore.ts"
 Expect Syntax Error: "compiler/unusedTypeParameters_infer.ts"
 Expect Syntax Error: "compiler/unusedTypeParameters_templateTag.ts"
@@ -2668,7 +2663,6 @@ Expect Syntax Error: "conformance/expressions/contextualTyping/parenthesizedCont
 Expect Syntax Error: "conformance/expressions/contextualTyping/parenthesizedContexualTyping2.ts"
 Expect Syntax Error: "conformance/expressions/contextualTyping/superCallParameterContextualTyping2.ts"
 Expect Syntax Error: "conformance/expressions/functionCalls/callOverload.ts"
-Expect Syntax Error: "conformance/expressions/functionCalls/callWithMissingVoid.ts"
 Expect Syntax Error: "conformance/expressions/functionCalls/callWithSpread2.ts"
 Expect Syntax Error: "conformance/expressions/functionCalls/callWithSpread3.ts"
 Expect Syntax Error: "conformance/expressions/functionCalls/callWithSpread4.ts"
@@ -3533,7 +3527,6 @@ Expect Syntax Error: "conformance/types/literal/templateLiteralTypes3.ts"
 Expect Syntax Error: "conformance/types/literal/templateLiteralTypes4.ts"
 Expect Syntax Error: "conformance/types/literal/templateLiteralTypesPatterns.ts"
 Expect Syntax Error: "conformance/types/literal/templateLiteralTypesPatternsPrefixSuffixAssignability.ts"
-Expect Syntax Error: "conformance/types/localTypes/localTypes4.ts"
 Expect Syntax Error: "conformance/types/mapped/mappedTypeAsClauseRelationships.ts"
 Expect Syntax Error: "conformance/types/mapped/mappedTypeAsClauses.ts"
 Expect Syntax Error: "conformance/types/mapped/mappedTypeConstraints2.ts"
@@ -3855,11 +3848,41 @@ Expect Syntax Error: "conformance/types/unknown/unknownControlFlow.ts"
 Expect Syntax Error: "conformance/types/unknown/unknownType1.ts"
 Expect Syntax Error: "conformance/types/unknown/unknownType2.ts"
 Expect Syntax Error: "conformance/types/witness/witness.ts"
+Expect to Parse: "compiler/awaitedTypeJQuery.ts"
+  × Identifier `T` has already been declared
+   ╭─[compiler/awaitedTypeJQuery.ts:2:1]
+ 2 │ 
+ 3 │ interface Thenable<T> extends PromiseLike<T> { }
+   ·                    ┬
+   ·                    ╰── `T` has already been declared here
+ 4 │ 
+   ╰────
+     ╭─[compiler/awaitedTypeJQuery.ts:124:1]
+ 124 │ 
+ 125 │ type T = Awaited<Promise3<string, Error, number, {}, string, boolean, any, Element, never>>; // string
+     ·      ┬
+     ·      ╰── It can not be redeclared here
+     ╰────
+
 Expect to Parse: "compiler/bom-utf16be.ts"
   × Invalid Character `￾`
    ╭─[compiler/bom-utf16be.ts:1:1]
  1 │ ￾瘀愀爀 砀㴀㄀　㬀ഀ਀
    · ─
+   ╰────
+
+Expect to Parse: "compiler/decoratorReferences.ts"
+  × Identifier `T` has already been declared
+   ╭─[compiler/decoratorReferences.ts:3:1]
+ 3 │ declare function y(...args: any[]): any;
+ 4 │ type T = number;
+   ·      ┬
+   ·      ╰── `T` has already been declared here
+ 5 │ @y(1 as T, C) // <-- T should be resolved to the type alias, not the type parameter of the class; C should resolve to the class
+ 6 │ class C<T> {
+   ·         ┬
+   ·         ╰── It can not be redeclared here
+ 7 │     @y(null as T) // <-- y should resolve to the function declaration, not the parameter; T should resolve to the type parameter of the class
    ╰────
 
 Expect to Parse: "compiler/elidedEmbeddedStatementsReplacedWithSemicolon.ts"
@@ -3888,6 +3911,151 @@ Expect to Parse: "compiler/emitBundleWithShebangAndPrologueDirectives1.ts"
    ·  ─
  7 │ "use strict"
    ╰────
+
+Expect to Parse: "compiler/inferenceErasedSignatures.ts"
+  × Identifier `T1` has already been declared
+    ╭─[compiler/inferenceErasedSignatures.ts:31:1]
+ 31 │ 
+ 32 │ interface BaseType<T1, T2>  {
+    ·                    ─┬
+    ·                     ╰── `T1` has already been declared here
+ 33 │     set<K extends keyof this>(key: K, value: this[K]): this[K];
+ 34 │     useT1(c: T1): void;
+ 35 │     useT2(r?: T2): void;
+ 36 │     unrelatedButSomehowRelevant(r?: any): void;
+ 37 │ }
+ 38 │ 
+ 39 │ interface InheritedType extends BaseType<number, boolean> {
+ 40 │     // This declaration shouldn't do anything...
+ 41 │     useT1(_: number): void
+ 42 │ }
+ 43 │ 
+ 44 │ // Structural expansion of InheritedType
+ 45 │ interface StructuralVersion  {
+ 46 │     set<K extends keyof this>(key: K, value: this[K]): this[K];
+ 47 │     useT1(c: number): void;
+ 48 │     useT2(r?: boolean): void;
+ 49 │     unrelatedButSomehowRelevant(r?: any): void;
+ 50 │ }
+ 51 │ 
+ 52 │ type GetT1<T> = T extends BaseType<infer U, any> ? U : never;
+ 53 │ 
+ 54 │ type T1 = GetT1<InheritedType>; // number
+    ·      ─┬
+    ·       ╰── It can not be redeclared here
+ 55 │ type T2 = GetT1<StructuralVersion>; // number
+    ╰────
+
+  × Identifier `T2` has already been declared
+    ╭─[compiler/inferenceErasedSignatures.ts:31:1]
+ 31 │ 
+ 32 │ interface BaseType<T1, T2>  {
+    ·                        ─┬
+    ·                         ╰── `T2` has already been declared here
+ 33 │     set<K extends keyof this>(key: K, value: this[K]): this[K];
+ 34 │     useT1(c: T1): void;
+ 35 │     useT2(r?: T2): void;
+ 36 │     unrelatedButSomehowRelevant(r?: any): void;
+ 37 │ }
+ 38 │ 
+ 39 │ interface InheritedType extends BaseType<number, boolean> {
+ 40 │     // This declaration shouldn't do anything...
+ 41 │     useT1(_: number): void
+ 42 │ }
+ 43 │ 
+ 44 │ // Structural expansion of InheritedType
+ 45 │ interface StructuralVersion  {
+ 46 │     set<K extends keyof this>(key: K, value: this[K]): this[K];
+ 47 │     useT1(c: number): void;
+ 48 │     useT2(r?: boolean): void;
+ 49 │     unrelatedButSomehowRelevant(r?: any): void;
+ 50 │ }
+ 51 │ 
+ 52 │ type GetT1<T> = T extends BaseType<infer U, any> ? U : never;
+ 53 │ 
+ 54 │ type T1 = GetT1<InheritedType>; // number
+ 55 │ type T2 = GetT1<StructuralVersion>; // number
+    ·      ─┬
+    ·       ╰── It can not be redeclared here
+    ╰────
+
+Expect to Parse: "compiler/nondistributiveConditionalTypeInfer.ts"
+  × Identifier `R` has already been declared
+    ╭─[compiler/nondistributiveConditionalTypeInfer.ts:4:1]
+  4 │ 
+  5 │ interface Sync<R, E, A> {
+    ·                ┬
+    ·                ╰── `R` has already been declared here
+  6 │   _R: (_: R) => void;
+  7 │   _E: () => E;
+  8 │   _A: () => A;
+  9 │ }
+ 10 │ 
+ 11 │ type R = _R<Sync<number, string, void>>;
+    ·      ┬
+    ·      ╰── It can not be redeclared here
+ 12 │ type E = _E<Sync<number, string, void>>;
+    ╰────
+
+  × Identifier `E` has already been declared
+   ╭─[compiler/nondistributiveConditionalTypeInfer.ts:4:1]
+ 4 │ 
+ 5 │ interface Sync<R, E, A> {
+   ·                   ┬
+   ·                   ╰── `E` has already been declared here
+ 6 │   _R: (_: R) => void;
+   ╰────
+    ╭─[compiler/nondistributiveConditionalTypeInfer.ts:11:1]
+ 11 │ type R = _R<Sync<number, string, void>>;
+ 12 │ type E = _E<Sync<number, string, void>>;
+    ·      ┬
+    ·      ╰── It can not be redeclared here
+ 13 │ type A = _A<Sync<number, string, void>>;
+    ╰────
+
+  × Identifier `A` has already been declared
+   ╭─[compiler/nondistributiveConditionalTypeInfer.ts:4:1]
+ 4 │ 
+ 5 │ interface Sync<R, E, A> {
+   ·                      ┬
+   ·                      ╰── `A` has already been declared here
+ 6 │   _R: (_: R) => void;
+   ╰────
+    ╭─[compiler/nondistributiveConditionalTypeInfer.ts:12:1]
+ 12 │ type E = _E<Sync<number, string, void>>;
+ 13 │ type A = _A<Sync<number, string, void>>;
+    ·      ┬
+    ·      ╰── It can not be redeclared here
+    ╰────
+
+Expect to Parse: "compiler/unusedTypeParametersNotCheckedByNoUnusedLocals.ts"
+  × Identifier `T` has already been declared
+   ╭─[compiler/unusedTypeParametersNotCheckedByNoUnusedLocals.ts:4:1]
+ 4 │ 
+ 5 │ type T<T> = { };
+   ·      ┬
+   ·      ╰── `T` has already been declared here
+ 6 │ 
+ 7 │ interface I<T> { };
+   ·             ┬
+   ·             ╰── It can not be redeclared here
+ 8 │ 
+   ╰────
+
+  × Identifier `T` has already been declared
+    ╭─[compiler/unusedTypeParametersNotCheckedByNoUnusedLocals.ts:4:1]
+  4 │ 
+  5 │ type T<T> = { };
+    ·      ┬
+    ·      ╰── `T` has already been declared here
+  6 │ 
+  7 │ interface I<T> { };
+  8 │ 
+  9 │ class C<T> {
+    ·         ┬
+    ·         ╰── It can not be redeclared here
+ 10 │     public m<V>() { }
+    ╰────
 
 Expect to Parse: "compiler/withStatementInternalComments.ts"
   × 'with' statements are not allowed
@@ -3964,6 +4132,17 @@ Expect to Parse: "conformance/esDecorators/esDecorators-preservesThis.ts"
  28 │             method1() { }
     ╰────
 
+Expect to Parse: "conformance/expressions/newOperator/newOperatorConformance.ts"
+  × Identifier `T` has already been declared
+    ╭─[conformance/expressions/newOperator/newOperatorConformance.ts:8:1]
+  8 │ 
+  9 │ class T<T> {
+    ·       ┬ ┬
+    ·       │ ╰── It can not be redeclared here
+    ·       ╰── `T` has already been declared here
+ 10 │     constructor(n?: T) { }
+    ╰────
+
 Expect to Parse: "conformance/externalModules/topLevelAwait.2.ts"
   × Cannot use `await` as an identifier in an async context
    ╭─[conformance/externalModules/topLevelAwait.2.ts:6:1]
@@ -3995,6 +4174,23 @@ Expect to Parse: "conformance/externalModules/topLevelAwait.3.ts"
    ·                         ─────
    ╰────
 
+Expect to Parse: "conformance/interfaces/declarationMerging/twoMergedInterfacesWithDifferingOverloads.ts"
+  × Identifier `A` has already been declared
+   ╭─[conformance/interfaces/declarationMerging/twoMergedInterfacesWithDifferingOverloads.ts:2:1]
+ 2 │ 
+ 3 │ interface A {
+   ·           ┬
+   ·           ╰── `A` has already been declared here
+ 4 │     foo(x: number): number;
+   ╰────
+    ╭─[conformance/interfaces/declarationMerging/twoMergedInterfacesWithDifferingOverloads.ts:41:1]
+ 41 │     b: U;
+ 42 │     foo<A>(x: A, y: A): U;
+    ·         ┬
+    ·         ╰── It can not be redeclared here
+ 43 │ }
+    ╰────
+
 Expect to Parse: "conformance/salsa/plainJSRedeclare3.ts"
   × Identifier `orbitol` has already been declared
    ╭─[conformance/salsa/plainJSRedeclare3.ts:4:1]
@@ -4007,6 +4203,143 @@ Expect to Parse: "conformance/salsa/plainJSRedeclare3.ts"
    ·        ╰── It can not be redeclared here
  7 │ orbitol.toExponential()
    ╰────
+
+Expect to Parse: "conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts"
+  × Identifier `A` has already been declared
+   ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:2:1]
+ 2 │ 
+ 3 │ class A {
+   ·       ┬
+   ·       ╰── `A` has already been declared here
+ 4 │     foo<T>(x: T): T { return null; }
+   ╰────
+    ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:14:1]
+ 14 │ 
+ 15 │ interface I<X, Y, Z, A> {
+    ·                      ┬
+    ·                      ╰── It can not be redeclared here
+ 16 │     foo(x: X): X;
+    ╰────
+
+  × Identifier `A` has already been declared
+   ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:2:1]
+ 2 │ 
+ 3 │ class A {
+   ·       ┬
+   ·       ╰── `A` has already been declared here
+ 4 │     foo<T>(x: T): T { return null; }
+   ╰────
+    ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:19:1]
+ 19 │ interface I2 {
+ 20 │     foo<Y, Z, A, B>(x: Y): Y;
+    ·               ┬
+    ·               ╰── It can not be redeclared here
+ 21 │ }
+    ╰────
+
+  × Identifier `B` has already been declared
+   ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:6:1]
+ 6 │ 
+ 7 │ class B<U, V> {
+   ·       ┬
+   ·       ╰── `B` has already been declared here
+ 8 │     foo(x: U): U { return null; }
+   ╰────
+    ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:19:1]
+ 19 │ interface I2 {
+ 20 │     foo<Y, Z, A, B>(x: Y): Y;
+    ·                  ┬
+    ·                  ╰── It can not be redeclared here
+ 21 │ }
+    ╰────
+
+  × Identifier `A` has already been declared
+   ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:2:1]
+ 2 │ 
+ 3 │ class A {
+   ·       ┬
+   ·       ╰── `A` has already been declared here
+ 4 │     foo<T>(x: T): T { return null; }
+   ╰────
+    ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:22:1]
+ 22 │ 
+ 23 │ var a: { foo<Z, A, B, C, D>(x: Z): Z }
+    ·                 ┬
+    ·                 ╰── It can not be redeclared here
+ 24 │ var b = { foo<A, B, C, D, E, F>(x: A) { return x; } };
+    ╰────
+
+  × Identifier `B` has already been declared
+   ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:6:1]
+ 6 │ 
+ 7 │ class B<U, V> {
+   ·       ┬
+   ·       ╰── `B` has already been declared here
+ 8 │     foo(x: U): U { return null; }
+   ╰────
+    ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:22:1]
+ 22 │ 
+ 23 │ var a: { foo<Z, A, B, C, D>(x: Z): Z }
+    ·                    ┬
+    ·                    ╰── It can not be redeclared here
+ 24 │ var b = { foo<A, B, C, D, E, F>(x: A) { return x; } };
+    ╰────
+
+  × Identifier `C` has already been declared
+    ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericCallSignaturesDifferingTypeParameterCounts.ts:10:1]
+ 10 │ 
+ 11 │ class C<V, W, X> {
+    ·       ┬
+    ·       ╰── `C` has already been declared here
+ 12 │     foo(x: V): V { return null; }
+ 13 │ }
+ 14 │ 
+ 15 │ interface I<X, Y, Z, A> {
+ 16 │     foo(x: X): X;
+ 17 │ }
+ 18 │ 
+ 19 │ interface I2 {
+ 20 │     foo<Y, Z, A, B>(x: Y): Y;
+ 21 │ }
+ 22 │ 
+ 23 │ var a: { foo<Z, A, B, C, D>(x: Z): Z }
+    ·                       ┬
+    ·                       ╰── It can not be redeclared here
+ 24 │ var b = { foo<A, B, C, D, E, F>(x: A) { return x; } };
+    ╰────
+
+Expect to Parse: "conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericConstructSignaturesDifferingTypeParameterCounts.ts"
+  × Identifier `B` has already been declared
+   ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericConstructSignaturesDifferingTypeParameterCounts.ts:2:1]
+ 2 │ 
+ 3 │ class B<U, V> {
+   ·       ┬
+   ·       ╰── `B` has already been declared here
+ 4 │     constructor(x: U) { return null; }
+   ╰────
+    ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericConstructSignaturesDifferingTypeParameterCounts.ts:15:1]
+ 15 │ interface I2 {
+ 16 │     new <Y, Z, A, B>(x: Y): C<Y, Z, A>;
+    ·                   ┬
+    ·                   ╰── It can not be redeclared here
+ 17 │ }
+    ╰────
+
+  × Identifier `B` has already been declared
+   ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericConstructSignaturesDifferingTypeParameterCounts.ts:2:1]
+ 2 │ 
+ 3 │ class B<U, V> {
+   ·       ┬
+   ·       ╰── `B` has already been declared here
+ 4 │     constructor(x: U) { return null; }
+   ╰────
+    ╭─[conformance/types/typeRelationships/typeAndMemberIdentity/objectTypesIdentityWithGenericConstructSignaturesDifferingTypeParameterCounts.ts:18:1]
+ 18 │ 
+ 19 │ var a: { new <Z, A, B, CC, D>(x: Z): C<Z, A, B>; }
+    ·                     ┬
+    ·                     ╰── It can not be redeclared here
+ 20 │ var b = { new<A, B, C, D, E, F>(x: A) { return x; } };
+    ╰────
 
   × Expected `,` but found `Identifier`
    ╭─[compiler/ArrowFunctionExpression1.ts:1:1]
@@ -5719,6 +6052,19 @@ Expect to Parse: "conformance/salsa/plainJSRedeclare3.ts"
  6 │ export default Foo
    ╰────
 
+  × Identifier `TypeVariable` has already been declared
+   ╭─[compiler/decoratorMetadataGenericTypeVariableInScope.ts:4:1]
+ 4 │ // Unused, but could collide with the named type argument below.
+ 5 │ class TypeVariable {}
+   ·       ──────┬─────
+   ·             ╰── `TypeVariable` has already been declared here
+ 6 │ 
+ 7 │ export class C<TypeVariable> {
+   ·                ──────┬─────
+   ·                      ╰── It can not be redeclared here
+ 8 │   @Decorate
+   ╰────
+
   × Cannot assign to this expression
    ╭─[compiler/decrementAndIncrementOperators.ts:3:1]
  3 │ // errors
@@ -6504,6 +6850,18 @@ Expect to Parse: "conformance/salsa/plainJSRedeclare3.ts"
  4 │ 
    ╰────
 
+  × Identifier `T` has already been declared
+   ╭─[compiler/incompatibleAssignmentOfIdenticallyNamedTypes.ts:1:1]
+ 1 │ interface T { }
+   ·           ┬
+   ·           ╰── `T` has already been declared here
+ 2 │ declare const a: T;
+ 3 │ class Foo<T> {
+   ·           ┬
+   ·           ╰── It can not be redeclared here
+ 4 │     x: T;
+   ╰────
+
   × Unexpected token
    ╭─[compiler/incompleteDottedExpressionAtEOF.ts:1:1]
  1 │ // used to leak __missing into error message
@@ -6770,6 +7128,22 @@ Expect to Parse: "conformance/salsa/plainJSRedeclare3.ts"
    ·               ─
  8 │ <Foo<number>/>;
    ╰────
+
+  × Identifier `T` has already been declared
+   ╭─[compiler/jsdocInTypeScript.ts:7:1]
+ 7 │ 
+ 8 │ class T {
+   ·       ┬
+   ·       ╰── `T` has already been declared here
+ 9 │     prop: number;
+   ╰────
+    ╭─[compiler/jsdocInTypeScript.ts:36:1]
+ 36 │ /** @template T */
+ 37 │ interface I<T extends number = 0> {}
+    ·             ┬
+    ·             ╰── It can not be redeclared here
+ 38 │ 
+    ╰────
 
   × Unexpected token
    ╭─[compiler/jsxAttributeMissingInitializer.tsx:1:1]
@@ -7563,6 +7937,23 @@ Expect to Parse: "conformance/salsa/plainJSRedeclare3.ts"
    ·     ────
  9 │ 
    ╰────
+
+  × Identifier `T` has already been declared
+    ╭─[compiler/noUnusedLocals_selfReference.ts:16:1]
+ 16 │ interface I { x: I };
+ 17 │ type T = { x: T };
+    ·      ┬
+    ·      ╰── `T` has already been declared here
+ 18 │ namespace N { N; }
+ 19 │ 
+ 20 │ // Avoid a false positive.
+ 21 │ // Previously `T` was considered unused due to merging with the property,
+ 22 │ // back when all non-blocks were checked for recursion.
+ 23 │ export interface A<T> { T: T }
+    ·                    ┬
+    ·                    ╰── It can not be redeclared here
+ 24 │ 
+    ╰────
 
   × Expected a semicolon or an implicit semicolon after a statement, but found none
    ╭─[compiler/numberLiteralsWithLeadingZeros.ts:7:1]
@@ -8865,6 +9256,21 @@ Expect to Parse: "conformance/salsa/plainJSRedeclare3.ts"
  16 │     }
     ╰────
 
+  × Identifier `public` has already been declared
+   ╭─[compiler/strictModeReservedWordInClassDeclaration.ts:1:1]
+ 1 │ interface public { }
+   ·           ───┬──
+   ·              ╰── `public` has already been declared here
+ 2 │ 
+   ╰────
+    ╭─[compiler/strictModeReservedWordInClassDeclaration.ts:20:1]
+ 20 │ 
+ 21 │ class D<public, private>{ }
+    ·         ───┬──
+    ·            ╰── It can not be redeclared here
+ 22 │ 
+    ╰────
+
   × The keyword 'package' is reserved
     ╭─[compiler/strictModeReservedWordInClassDeclaration.ts:26:1]
  26 │ class F1 implements public.private.implements { }
@@ -9751,6 +10157,34 @@ Expect to Parse: "conformance/salsa/plainJSRedeclare3.ts"
     ·              ┬
     ·              ╰── `;` expected
  87 │     z(x);
+    ╰────
+
+  × Identifier `T` has already been declared
+   ╭─[compiler/unusedTypeParametersCheckedByNoUnusedParameters.ts:4:1]
+ 4 │ 
+ 5 │ type T<T> = { };
+   ·      ┬
+   ·      ╰── `T` has already been declared here
+ 6 │ 
+ 7 │ interface I<T> { };
+   ·             ┬
+   ·             ╰── It can not be redeclared here
+ 8 │ 
+   ╰────
+
+  × Identifier `T` has already been declared
+    ╭─[compiler/unusedTypeParametersCheckedByNoUnusedParameters.ts:4:1]
+  4 │ 
+  5 │ type T<T> = { };
+    ·      ┬
+    ·      ╰── `T` has already been declared here
+  6 │ 
+  7 │ interface I<T> { };
+  8 │ 
+  9 │ class C<T> {
+    ·         ┬
+    ·         ╰── It can not be redeclared here
+ 10 │     public m<V>() { }
     ╰────
 
   × Expected a semicolon or an implicit semicolon after a statement, but found none
@@ -15132,6 +15566,22 @@ Expect to Parse: "conformance/salsa/plainJSRedeclare3.ts"
  18 │ (, BOOLEAN);
     ╰────
 
+  × Identifier `X` has already been declared
+   ╭─[conformance/expressions/functionCalls/callWithMissingVoid.ts:3:1]
+ 3 │ // From #4260
+ 4 │ class X<T> {
+   ·       ┬
+   ·       ╰── `X` has already been declared here
+ 5 │     f(t: T) {
+   ╰────
+    ╭─[conformance/expressions/functionCalls/callWithMissingVoid.ts:28:1]
+ 28 │ 
+ 29 │ class MyPromise<X> {
+    ·                 ┬
+    ·                 ╰── It can not be redeclared here
+ 30 │     constructor(executor: (resolve: (value: X) => void) => void) {
+    ╰────
+
   × 'with' statements are not allowed
    ╭─[conformance/expressions/functions/arrowFunctionContexts.ts:2:1]
  2 │ // Arrow function used in with statement
@@ -19063,6 +19513,18 @@ Expect to Parse: "conformance/salsa/plainJSRedeclare3.ts"
    ·       ╰── `from` expected
  2 │ const a = import<string, number>
    ╰────
+
+  × Identifier `T` has already been declared
+    ╭─[conformance/types/localTypes/localTypes4.ts:19:1]
+ 19 │     // Type parameters and top-level local types are in same declaration space
+ 20 │     function f<T>() {
+    ·                ┬
+    ·                ╰── It can not be redeclared here
+ 21 │         interface T { }
+    ·                   ┬
+    ·                   ╰── `T` has already been declared here
+ 22 │         return undefined;
+    ╰────
 
   × Expected `}` but found `Identifier`
     ╭─[conformance/types/mapped/mappedTypeProperties.ts:9:1]

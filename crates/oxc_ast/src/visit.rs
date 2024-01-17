@@ -1518,11 +1518,13 @@ pub trait Visit<'a>: Sized {
         let kind = AstKind::TSTypeAliasDeclaration(self.alloc(decl));
         self.enter_node(kind);
         self.visit_binding_identifier(&decl.id);
+        self.enter_scope(ScopeFlags::empty());
         if let Some(parameters) = &decl.type_parameters {
             self.visit_ts_type_parameter_declaration(parameters);
         }
         self.visit_ts_type(&decl.type_annotation);
         self.leave_node(kind);
+        self.leave_scope();
     }
 
     fn visit_ts_interface_declaration(&mut self, decl: &TSInterfaceDeclaration<'a>) {
@@ -1667,7 +1669,6 @@ pub trait Visit<'a>: Sized {
 
     fn visit_ts_type_parameter(&mut self, ty: &TSTypeParameter<'a>) {
         let kind = AstKind::TSTypeParameter(self.alloc(ty));
-        self.enter_scope(ScopeFlags::empty());
         self.enter_node(kind);
         if let Some(constraint) = &ty.constraint {
             self.visit_ts_type(constraint);
@@ -1677,7 +1678,6 @@ pub trait Visit<'a>: Sized {
             self.visit_ts_type(default);
         }
         self.leave_node(kind);
-        self.leave_scope();
     }
 
     fn visit_ts_type_parameter_instantiation(&mut self, ty: &TSTypeParameterInstantiation<'a>) {

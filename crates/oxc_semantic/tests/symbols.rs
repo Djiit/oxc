@@ -87,3 +87,67 @@ fn test_types_simple() {
         .has_number_of_references(1)
         .test();
 }
+
+#[test]
+fn test_type_parameter() {
+    let tester = SemanticTester::ts(
+        "
+        type A<T> = T
+        type B<T> = T
+        interface C<D> {
+            C: D;
+        }
+        function f<F>() {
+            return '' as F
+        }
+        class D<CC> {
+          a: CC;
+          method(b: CC) {
+            
+          }
+        }
+    ",
+    );
+
+    tester
+        .has_symbol("T")
+        .contains_flags(SymbolFlags::TypeParameter)
+        .has_number_of_references(1)
+        .test();
+
+    tester
+        .has_symbol("D")
+        .contains_flags(SymbolFlags::TypeParameter)
+        .has_number_of_references(1)
+        .test();
+
+    tester
+        .has_symbol("F")
+        .contains_flags(SymbolFlags::TypeParameter)
+        .has_number_of_references(1)
+        .test();
+
+    tester
+        .has_symbol("CC")
+        .contains_flags(SymbolFlags::TypeParameter)
+        .has_number_of_references(2)
+        .test();
+}
+
+#[ignore = "failed"]
+#[test]
+fn test_type_parameter_failed() {
+    SemanticTester::ts(
+        "
+        interface CC {
+        }
+        class A<CC> {
+          a: CC;
+        }
+    ",
+    );
+
+    // Failed
+    // Semantic analysis failed:
+    // Identifier `CC` has already been declared
+}
